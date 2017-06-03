@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css?family=Inconsolata');
+
+
+body {
+    background-color: rgb(34, 34, 34);
+    height: 100vh;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+pre {
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    color: rgb(254, 254, 254);
+    font-family: 'Inconsolata', monospace;
+    line-height: 0.8;
+}

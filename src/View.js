@@ -1,9 +1,7 @@
 "use strict";
 
-
 ( function(window, document) {
     class View {
-
         /** Construct a new View instance
          * @param {number} height - the height of the View, in characters
          * @param {number} width - the width of the View, in characters
@@ -38,7 +36,6 @@
             if (this.mountElement) {
                 return null;
             }
-
             if (typeof el === 'string')
                 this.mountElement = document.getElementById(el);
             else
@@ -57,7 +54,6 @@
                     this.wrapperElement.appendChild(curCharElement)
                 }
             }
-
             // only add wrapper to the page after all spans are added
             this.mountElement.appendChild(this.wrapperElement);
 
@@ -79,6 +75,7 @@
                 if (DOMChars[i].textContent != '\n') {
                     DOMChars[i].textContent = this.getChar(x, y);
                     DOMChars[i].style.color = this.getCharColor(x, y);
+                    DOMChars[i].style.backgroundColor = this.getCharBackgroundColor(x, y);
                     x++;
                 } else {
                     x = 0;
@@ -165,49 +162,92 @@
             return this.colorArray[y][x];
         }
 
-        getCharBackgroundColor(x, y) {}
+        /** Get the current background color for a given character in the View
+         * @param {integer} x - the x coordinate of the character
+         * @param {integer} y - the y coordinate of the character
+         */
+        getCharBackgroundColor(x, y) {
+            if (x >= this.width || y >= this.height)
+                return undefined;
+            if (x < 0 || y < 0)
+                return undefined;
 
-        setCharBackgroundColor(x, y, color) {
-            // TODO
+            return this.backgroundColorArray[y][x];
         }
 
+        /** Set the bacground color of the given character in the View
+         * @param {integer} x - the x coordinate of the character
+         * @param {integer} y - the y coordinate of the character
+         */
+        setCharBackgroundColor(x, y, color) {
+            if (x >= this.width || y >= this.height)
+                return undefined;
+            if (x < 0 || y < 0)
+                return undefined;
+
+            this.backgroundColorArray[y][x] = color;
+            return this.backgroundColorArray[y][x];
+        }
+
+        /** Reset all of the colors and background colors to their default
+         *  values
+         */
         resetColors() {
             let curRow;
             this.colorArray = [];
+            this.backgroundColorArray = [];
             for (let i = 0; i < this.height; i++) {
                 curRow = [];
                 for (let j = 0; j < this.width; j++) {
                     curRow.push('inherit');
                 }
                 this.colorArray.push(curRow);
+                this.backgroundColorArray.push(curRow);
             }
         }
 
-        rect(x, y, width, height, border) {
+        /** Draw an unfilled rectangle using the specified character onto the View
+         * @param {integer} x - the x coordinate of the top left of the rectangle
+         * @param {integer} y - the y coordinate of the top left of the rectangle
+         * @param {integer} width - the width of the rectangle
+         * @param {integer} height - the height of the rectangle
+         * @param {integer} borderChar - the character to use for the border of
+         * the rectangle
+         */
+        rect(x, y, width, height, borderChar) {
             let i;
             // horizontal lines
             for (i = 0; i < width; i++) {
-                this.setChar(x + i, y, border);
-                this.setChar(x + i, y + height - 1, border);
+                this.setChar(x + i, y, borderChar);
+                this.setChar(x + i, y + height - 1, borderChar);
             }
 
-            // vertical
+            // vertical lines
             for (i = 0; i < height; i++) {
-                this.setChar(x, y + i, border);
-                this.setChar(x + width, y + i, border);
+                this.setChar(x, y + i, borderChar);
+                this.setChar(x + width, y + i, borderChar);
             }
         }
 
-        fillRect(x, y, width, height, border, fill) {
-            for (let row = y; row < height + y; row++) {
-                for (let column = x; column < width + x; column++) {
-                    this.setChar(column, row, fill);
+        /** Draw a filled rectangle using the specified border and fill characters
+         * @param {integer} x - the x coordinate of the top left of the rectangle
+         * @param {integer} y - the y coordinate of the top left of the rectangle
+         * @param {integer} width - the width of the rectangle
+         * @param {integer} height - the height of the rectangle
+         * @param {String} borderChar - the character to use for the border of
+         * the rectangle
+         * @param {String} fillChar - the character to use for the inside of the
+         * rectangle
+         */
+        fillRect(x, y, width, height, borderChar, fillChar) {
+            this.rect(x, y, width, height, borderChar);
+            for (let row = y + 1 ; row < height + y - 1; row++) {
+                for (let column = x + 1; column < width + x - 1; column++) {
+                    this.setChar(column, row, fillChar);
                 }
             }
-
-
-
         }
+
 
         text(x, y, text) {
             for (let i = 0; i < text.length; i++) {
@@ -256,6 +296,5 @@
             this.render();
         }
     }
-
     window.View = View;
 } )(window, document);

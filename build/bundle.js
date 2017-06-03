@@ -158,6 +158,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     if (DOMChars[i].textContent != '\n') {
                         DOMChars[i].textContent = this.getChar(x, y);
                         DOMChars[i].style.color = this.getCharColor(x, y);
+                        DOMChars[i].style.backgroundColor = this.getCharBackgroundColor(x, y);
                         x++;
                     } else {
                         x = 0;
@@ -255,23 +256,34 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }
         }, {
             key: 'getCharBackgroundColor',
-            value: function getCharBackgroundColor(x, y) {}
+            value: function getCharBackgroundColor(x, y) {
+                if (x >= this.width || y >= this.height) return undefined;
+                if (x < 0 || y < 0) return undefined;
+
+                return this.backgroundColorArray[y][x];
+            }
         }, {
             key: 'setCharBackgroundColor',
             value: function setCharBackgroundColor(x, y, color) {
-                // TODO
+                if (x >= this.width || y >= this.height) return undefined;
+                if (x < 0 || y < 0) return undefined;
+
+                this.backgroundColorArray[y][x] = color;
+                return this.backgroundColorArray[y][x];
             }
         }, {
             key: 'resetColors',
             value: function resetColors() {
                 var curRow = void 0;
                 this.colorArray = [];
+                this.backgroundColorArray = [];
                 for (var i = 0; i < this.height; i++) {
                     curRow = [];
                     for (var j = 0; j < this.width; j++) {
                         curRow.push('inherit');
                     }
                     this.colorArray.push(curRow);
+                    this.backgroundColorArray.push(curRow);
                 }
             }
         }, {
@@ -284,7 +296,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     this.setChar(x + i, y + height - 1, border);
                 }
 
-                // vertical
+                // vertical lines
                 for (i = 0; i < height; i++) {
                     this.setChar(x, y + i, border);
                     this.setChar(x + width, y + i, border);
