@@ -1,22 +1,16 @@
 "use strict";
 
-( function(window, document) {
-    class View {
-        /** Construct a new View instance
+(function(window, document) {
+    class Pixoglyph {
+        /** Construct a new Pixoglyph instance
          * @param {number} height - the height of the View, in characters
          * @param {number} width - the width of the View, in characters
          * @param {character} backgroundChar - character to as a default when no
          * other character has been set
-         * @param {boolean} continuous - flag determining whether this View renders
-         * repeatedly (in a continuous manner), or in a more event bases manner
-         * @param {number} fps - if the rendering is done continuously, this defines
-         * how many times per second the View will render
          */
-        constructor(width, height, backgroundChar, continuous, fps) {
+        constructor(width, height, backgroundChar) {
             this.height = height;
             this.width = width;
-            this.continuous = continuous || false;
-            this.fps = fps || -1;
             this.mountElement = undefined;
 
             this.backgroundChar = (backgroundChar || ' ')[0];
@@ -159,6 +153,8 @@
                 return undefined;
 
             this.colorArray[y][x] = color;
+            console.log(colorArray);
+            console.log(backgroundColorArray);
             return this.colorArray[y][x];
         }
 
@@ -241,20 +237,29 @@
          */
         fillRect(x, y, width, height, borderChar, fillChar) {
             this.rect(x, y, width, height, borderChar);
-            for (let row = y + 1 ; row < height + y - 1; row++) {
-                for (let column = x + 1; column < width + x - 1; column++) {
-                    this.setChar(column, row, fillChar);
+            for (let row = y + 1; row < height + y - 1; row++) {
+                for (let column = x + 1; column < width + x; column++) {
+                    this.setChar(column, row, fillChar || this.backgroundChar);
                 }
             }
         }
 
-
+        /** Write a horizontal line of text to the view from left to right,
+         * starting at position (x, y).
+         * @param {integer} x - the starting x position of the text
+         * @param {integer} y - the starting y position of the text
+         */
         text(x, y, text) {
             for (let i = 0; i < text.length; i++) {
                 this.setChar(x + i, y, text[i]);
             }
         }
 
+        /** Write a vertical line of text to the view from top to bottom,
+         * starting at position (x, y).
+         * @param {integer} x - the starting x position of the text
+         * @param {integer} y - the starting y position of the text
+         */
         verticalText(x, y, text) {
             for (let i = 0; i < text.length; i++) {
                 this.setChar(x, y + i, text[i]);
@@ -296,5 +301,5 @@
             this.render();
         }
     }
-    window.View = View;
-} )(window, document);
+    window.Pixoglyph = Pixoglyph;
+})(window, document);

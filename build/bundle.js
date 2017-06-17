@@ -78,25 +78,18 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 (function (window, document) {
-    var View = function () {
-
-        /** Construct a new View instance
+    var Pixoglyph = function () {
+        /** Construct a new Pixoglyph instance
          * @param {number} height - the height of the View, in characters
          * @param {number} width - the width of the View, in characters
          * @param {character} backgroundChar - character to as a default when no
          * other character has been set
-         * @param {boolean} continuous - flag determining whether this View renders
-         * repeatedly (in a continuous manner), or in a more event bases manner
-         * @param {number} fps - if the rendering is done continuously, this defines
-         * how many times per second the View will render
          */
-        function View(width, height, backgroundChar, continuous, fps) {
-            _classCallCheck(this, View);
+        function Pixoglyph(width, height, backgroundChar) {
+            _classCallCheck(this, Pixoglyph);
 
             this.height = height;
             this.width = width;
-            this.continuous = continuous || false;
-            this.fps = fps || -1;
             this.mountElement = undefined;
 
             this.backgroundChar = (backgroundChar || ' ')[0];
@@ -114,13 +107,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _createClass(View, [{
+        _createClass(Pixoglyph, [{
             key: 'mount',
             value: function mount(el) {
                 if (this.mountElement) {
                     return null;
                 }
-
                 if (typeof el === 'string') this.mountElement = document.getElementById(el);else this.mountElement = el;
 
                 // stuff a bunch of span elements into the wrapper
@@ -133,7 +125,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         this.wrapperElement.appendChild(curCharElement);
                     }
                 }
-
                 // only add wrapper to the page after all spans are added
                 this.mountElement.appendChild(this.wrapperElement);
 
@@ -252,8 +243,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 if (x < 0 || y < 0) return undefined;
 
                 this.colorArray[y][x] = color;
+                console.log(colorArray);
+                console.log(backgroundColorArray);
                 return this.colorArray[y][x];
             }
+
+            /** Get the current background color for a given character in the View
+             * @param {integer} x - the x coordinate of the character
+             * @param {integer} y - the y coordinate of the character
+             */
+
         }, {
             key: 'getCharBackgroundColor',
             value: function getCharBackgroundColor(x, y) {
@@ -262,6 +261,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 return this.backgroundColorArray[y][x];
             }
+
+            /** Set the bacground color of the given character in the View
+             * @param {integer} x - the x coordinate of the character
+             * @param {integer} y - the y coordinate of the character
+             */
+
         }, {
             key: 'setCharBackgroundColor',
             value: function setCharBackgroundColor(x, y, color) {
@@ -271,6 +276,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 this.backgroundColorArray[y][x] = color;
                 return this.backgroundColorArray[y][x];
             }
+
+            /** Reset all of the colors and background colors to their default
+             *  values
+             */
+
         }, {
             key: 'resetColors',
             value: function resetColors() {
@@ -286,31 +296,61 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     this.backgroundColorArray.push(curRow);
                 }
             }
+
+            /** Draw an unfilled rectangle using the specified character onto the View
+             * @param {integer} x - the x coordinate of the top left of the rectangle
+             * @param {integer} y - the y coordinate of the top left of the rectangle
+             * @param {integer} width - the width of the rectangle
+             * @param {integer} height - the height of the rectangle
+             * @param {integer} borderChar - the character to use for the border of
+             * the rectangle
+             */
+
         }, {
             key: 'rect',
-            value: function rect(x, y, width, height, border) {
+            value: function rect(x, y, width, height, borderChar) {
                 var i = void 0;
                 // horizontal lines
                 for (i = 0; i < width; i++) {
-                    this.setChar(x + i, y, border);
-                    this.setChar(x + i, y + height - 1, border);
+                    this.setChar(x + i, y, borderChar);
+                    this.setChar(x + i, y + height - 1, borderChar);
                 }
 
                 // vertical lines
                 for (i = 0; i < height; i++) {
-                    this.setChar(x, y + i, border);
-                    this.setChar(x + width, y + i, border);
+                    this.setChar(x, y + i, borderChar);
+                    this.setChar(x + width, y + i, borderChar);
                 }
             }
+
+            /** Draw a filled rectangle using the specified border and fill characters
+             * @param {integer} x - the x coordinate of the top left of the rectangle
+             * @param {integer} y - the y coordinate of the top left of the rectangle
+             * @param {integer} width - the width of the rectangle
+             * @param {integer} height - the height of the rectangle
+             * @param {String} borderChar - the character to use for the border of
+             * the rectangle
+             * @param {String} fillChar - the character to use for the inside of the
+             * rectangle
+             */
+
         }, {
             key: 'fillRect',
-            value: function fillRect(x, y, width, height, border, fill) {
-                for (var row = y; row < height + y; row++) {
-                    for (var column = x; column < width + x; column++) {
-                        this.setChar(column, row, fill);
+            value: function fillRect(x, y, width, height, borderChar, fillChar) {
+                this.rect(x, y, width, height, borderChar);
+                for (var row = y + 1; row < height + y - 1; row++) {
+                    for (var column = x + 1; column < width + x; column++) {
+                        this.setChar(column, row, fillChar || this.backgroundChar);
                     }
                 }
             }
+
+            /** Write a horizontal line of text to the view from left to right,
+             * starting at position (x, y).
+             * @param {integer} x - the starting x position of the text
+             * @param {integer} y - the starting y position of the text
+             */
+
         }, {
             key: 'text',
             value: function text(x, y, _text) {
@@ -318,6 +358,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     this.setChar(x + i, y, _text[i]);
                 }
             }
+
+            /** Write a vertical line of text to the view from top to bottom,
+             * starting at position (x, y).
+             * @param {integer} x - the starting x position of the text
+             * @param {integer} y - the starting y position of the text
+             */
+
         }, {
             key: 'verticalText',
             value: function verticalText(x, y, text) {
@@ -363,10 +410,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }
         }]);
 
-        return View;
+        return Pixoglyph;
     }();
 
-    window.View = View;
+    window.Pixoglyph = Pixoglyph;
 })(window, document);
 
 /***/ })
