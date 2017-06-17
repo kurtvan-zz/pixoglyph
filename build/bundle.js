@@ -121,13 +121,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     for (var j = 0; j <= this.width; j++) {
                         curCharElement = document.createElement('span');
                         if (j == this.width) curCharElement.innerHTML = "\n";else curCharElement.innerHTML = this.getChar(j, i);
+
                         curCharElement.style.color = this.getCharColor(i, j);
+                        curCharElement.style.backgroundColor = this.getCharBackgroundColor(i, j);
                         this.wrapperElement.appendChild(curCharElement);
                     }
                 }
                 // only add wrapper to the page after all spans are added
                 this.mountElement.appendChild(this.wrapperElement);
-
                 return this.mountElement;
             }
 
@@ -242,9 +243,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 if (x >= this.width || y >= this.height) return undefined;
                 if (x < 0 || y < 0) return undefined;
 
+                console.log('before: ' + this.colorArray[y][x], this.backgroundColorArray[y][x]);
                 this.colorArray[y][x] = color;
-                console.log(colorArray);
-                console.log(backgroundColorArray);
+                console.log('after: ' + this.colorArray[y][x], this.backgroundColorArray[y][x]);
                 return this.colorArray[y][x];
             }
 
@@ -293,7 +294,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         curRow.push('inherit');
                     }
                     this.colorArray.push(curRow);
-                    this.backgroundColorArray.push(curRow);
+                    this.backgroundColorArray.push(curRow.slice());
                 }
             }
 

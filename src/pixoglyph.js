@@ -44,13 +44,14 @@
                         curCharElement.innerHTML = "\n";
                     else
                         curCharElement.innerHTML = this.getChar(j, i);
+
                     curCharElement.style.color = this.getCharColor(i, j);
+                    curCharElement.style.backgroundColor = this.getCharBackgroundColor(i, j);
                     this.wrapperElement.appendChild(curCharElement)
                 }
             }
             // only add wrapper to the page after all spans are added
             this.mountElement.appendChild(this.wrapperElement);
-
             return this.mountElement;
         }
 
@@ -152,9 +153,9 @@
             if (x < 0 || y < 0)
                 return undefined;
 
+            console.log('before: ' + this.colorArray[y][x], this.backgroundColorArray[y][x]);
             this.colorArray[y][x] = color;
-            console.log(colorArray);
-            console.log(backgroundColorArray);
+            console.log('after: ' + this.colorArray[y][x], this.backgroundColorArray[y][x]);
             return this.colorArray[y][x];
         }
 
@@ -198,7 +199,7 @@
                     curRow.push('inherit');
                 }
                 this.colorArray.push(curRow);
-                this.backgroundColorArray.push(curRow);
+                this.backgroundColorArray.push(curRow.slice());
             }
         }
 
