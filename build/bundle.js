@@ -417,6 +417,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     window.Pixoglyph = Pixoglyph;
 })(window, document);
 
+module.exports = Pixoglyph;
+
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map

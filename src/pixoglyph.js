@@ -304,3 +304,5 @@
     }
     window.Pixoglyph = Pixoglyph;
 })(window, document);
+
+module.exports = Pixoglyph;
