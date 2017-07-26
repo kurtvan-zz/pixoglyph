@@ -15,7 +15,7 @@ efficient drawing to the DOM.
 
 ---
 
-Clone the sourse or just download one of the bundles (minified
+Clone the source or just download one of the bundles (minified
 or unminified), and create a new instance with
 
 `let p = new Pixoglyph(width, height, backGroundCharacter)`  
