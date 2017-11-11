@@ -23,17 +23,19 @@
             this.wrapperElement = document.createElement('pre');
         }
 
-        /** Associate this view with a given DOM element
+        /** Bind this view to a given DOM element
          * @param {Element} - the element that this View will be inserted into
          */
         mount(el) {
             if (this.mountElement) {
                 return null;
             }
-            if (typeof el === 'string')
+            if (typeof el === 'string') {
                 this.mountElement = document.getElementById(el);
-            else
+            }
+            else {
                 this.mountElement = el;
+            }
 
             // stuff a bunch of span elements into the wrapper
             let curCharElement;
@@ -148,10 +150,12 @@
          * @param {integer} y - the y coordinate of the character
          */
         setCharColor(x, y, color) {
-            if (x >= this.width || y >= this.height)
+            if (x >= this.width || y >= this.height) {
                 return undefined;
-            if (x < 0 || y < 0)
+            }
+            if (x < 0 || y < 0) {
                 return undefined;
+            }
 
             console.log('before: ' + this.colorArray[y][x], this.backgroundColorArray[y][x]);
             this.colorArray[y][x] = color;
@@ -164,10 +168,12 @@
          * @param {integer} y - the y coordinate of the character
          */
         getCharBackgroundColor(x, y) {
-            if (x >= this.width || y >= this.height)
+            if (x >= this.width || y >= this.height) {
+                return undefined
+            }
+            if (x < 0 || y < 0) {
                 return undefined;
-            if (x < 0 || y < 0)
-                return undefined;
+            }
 
             return this.backgroundColorArray[y][x];
         }
@@ -177,10 +183,12 @@
          * @param {integer} y - the y coordinate of the character
          */
         setCharBackgroundColor(x, y, color) {
-            if (x >= this.width || y >= this.height)
+            if (x >= this.width || y >= this.height) {
                 return undefined;
-            if (x < 0 || y < 0)
+            }
+            if (x < 0 || y < 0) {
                 return undefined;
+            }
 
             this.backgroundColorArray[y][x] = color;
             return this.backgroundColorArray[y][x];
